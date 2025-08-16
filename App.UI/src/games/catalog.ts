@@ -33,4 +33,14 @@ export const gamesCatalog: GameCatalogItem[] = [
     status: "In progress",
     icon: "/tic-tac-toe.svg",
   },
+  {
+    id: "sudoku",
+    title: "Sudoku",
+    description:
+      "Generate and solve unique-solution Sudoku puzzles with difficulty settings and optional seeds.",
+    difficulty: "Advanced",
+    route: "/games/sudoku",
+    status: "In progress",
+    icon: "/sudoku.svg",
+  },
 ];
