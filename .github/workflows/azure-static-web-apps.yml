@@ -1,0 +1,73 @@
+name: CI & Deploy (Azure Static Web Apps)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  deployments: write
+
+concurrency:
+  group: swa-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build_and_test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: App.UI/package-lock.json
+
+      - name: Install deps
+        working-directory: App.UI
+        run: npm ci
+
+      - name: Lint
+        working-directory: App.UI
+        run: npm run lint
+
+      - name: Test
+        working-directory: App.UI
+        run: npm run test -- --run
+
+      - name: Build
+        working-directory: App.UI
+        run: npm run build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-ui-dist
+          path: App.UI/dist
+
+  deploy:
+    name: Deploy to Azure Static Web Apps
+    needs: build_and_test
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_WONDERFUL_SKY_04F78A41E }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: upload
+          app_location: App.UI
+          api_location: ""
+          output_location: dist
+
