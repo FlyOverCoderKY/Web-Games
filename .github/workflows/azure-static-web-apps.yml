@@ -39,7 +39,7 @@ jobs:
 
       - name: Test
         working-directory: App.UI
-        run: npm run test -- --run
+        run: npm run test
 
       - name: Build
         working-directory: App.UI
