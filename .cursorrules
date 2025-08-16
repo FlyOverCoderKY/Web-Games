@@ -1,0 +1,33 @@
+Project shell rules
+
+- All terminal commands run in Windows PowerShell (C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe), not bash.
+- Command chaining: use `;` between commands. Do not use `&&` or `||`.
+- Directory changes: prefer `Set-Location <path>` (alias: `cd` works, but avoid `&& cd ...`).
+- Background jobs: rely on the tool’s background flag. Do not append `&`.
+- Piping for output: do not use `| cat`. If needed, use `| Out-Host` or `| Out-String -Width 2000`.
+- Environment variables: use `$env:NAME = "value"` (not `export`).
+- File ops: use `Remove-Item`, `New-Item`, `Get-ChildItem` instead of `rm`, `touch`, `ls`.
+- npm examples:
+  - `npm run dev` (foreground); to pass args: `npm run dev -- --host 0.0.0.0 --port 5173`
+  - Use `;` to sequence: `npm i; npm run build`
+- Path quoting: wrap Windows paths with spaces in double quotes.
+
+Context reminders
+
+- Workspace root: C:\Users\Nathan\source\repos\Web-Games
+- UI app path: C:\Users\Nathan\source\repos\Web-Games\App.UI
+- Prefer non-interactive flags (e.g., `--yes`) when commands might prompt.
+
+Start/serve conventions
+
+- Dev server (default when asked to "start the website"):
+  - `Set-Location App.UI; npm run dev`
+  - Long-running: start with the tool's background flag
+  - Access at `http://localhost:5173/` (Vite default)
+- Production preview (when asked to "build and start"):
+  - `Set-Location App.UI; npm run build; npm run preview -- --host 127.0.0.1 --port 4173`
+  - Long-running: start with the tool's background flag
+  - Access at `http://localhost:4173/`
+- Programmatic health check (optional):
+  - `Start-Sleep -Seconds 2; (Invoke-WebRequest -UseBasicParsing http://localhost:5173).StatusCode`
+
