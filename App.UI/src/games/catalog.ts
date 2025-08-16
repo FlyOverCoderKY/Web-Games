@@ -43,4 +43,14 @@ export const gamesCatalog: GameCatalogItem[] = [
     status: "In progress",
     icon: "/sudoku.svg",
   },
+  {
+    id: "checkers",
+    title: "Checkers",
+    description:
+      "Classic 8×8 checkers. Click a piece to see legal moves; click a highlighted square to move. Kings are crowned on the back rank.",
+    difficulty: "Intermediate",
+    route: "/games/checkers",
+    status: "In progress",
+    icon: "/checkers.svg",
+  },
 ];

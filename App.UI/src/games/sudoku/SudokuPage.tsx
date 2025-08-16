@@ -185,7 +185,14 @@ const SudokuPage: React.FC = () => {
           title="Board"
           subtitle={solved ? "Solved!" : "Fill the grid with digits 1–9"}
         >
-          <div style={{ display: "flex", gap: 16, justifyContent: "center", alignItems: "flex-start" }}>
+          <div
+            style={{
+              display: "flex",
+              gap: 16,
+              justifyContent: "center",
+              alignItems: "flex-start",
+            }}
+          >
             <div
               style={{
                 display: "grid",
@@ -252,19 +259,50 @@ const SudokuPage: React.FC = () => {
               )}
             </div>
             <div aria-label="Digit tally" style={{ minWidth: 140 }}>
-              <div className="ui-label" style={{ marginBottom: 8 }}>Digit tally</div>
+              <div className="ui-label" style={{ marginBottom: 8 }}>
+                Digit tally
+              </div>
               <div style={{ display: "grid", gap: 6 }}>
                 {Array.from({ length: 9 }).map((_, i) => {
                   const d = i + 1;
                   const count = digitCounts[d] ?? 0;
                   const pct = Math.max(0, Math.min(100, (count / 9) * 100));
                   return (
-                    <div key={d} style={{ display: "grid", gridTemplateColumns: "28px 1fr auto", gap: 8, alignItems: "center" }}>
-                      <div style={{ textAlign: "right", fontWeight: 700 }}>{d}</div>
-                      <div aria-hidden="true" style={{ height: 8, background: "var(--color-border)", borderRadius: 4, overflow: "hidden" }}>
-                        <div style={{ width: `${pct}%`, height: 8, background: "var(--color-accent)" }} />
+                    <div
+                      key={d}
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "28px 1fr auto",
+                        gap: 8,
+                        alignItems: "center",
+                      }}
+                    >
+                      <div style={{ textAlign: "right", fontWeight: 700 }}>
+                        {d}
                       </div>
-                      <div className="ui-help" style={{ minWidth: 36, textAlign: "right" }}>{count}/9</div>
+                      <div
+                        aria-hidden="true"
+                        style={{
+                          height: 8,
+                          background: "var(--color-border)",
+                          borderRadius: 4,
+                          overflow: "hidden",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: `${pct}%`,
+                            height: 8,
+                            background: "var(--color-accent)",
+                          }}
+                        />
+                      </div>
+                      <div
+                        className="ui-help"
+                        style={{ minWidth: 36, textAlign: "right" }}
+                      >
+                        {count}/9
+                      </div>
                     </div>
                   );
                 })}

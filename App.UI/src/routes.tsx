@@ -3,6 +3,7 @@ import HomePage from "./pages/HomePage";
 import NumberGuessPage from "./games/number-guess/NumberGuessPage";
 import TicTacToePage from "./games/tic-tac-toe/TicTacToePage";
 import SudokuPage from "./games/sudoku/SudokuPage";
+import CheckersPage from "./games/checkers/CheckersPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 export const routes: RouteObject[] = [
@@ -10,5 +11,6 @@ export const routes: RouteObject[] = [
   { path: "/games/number-guess", element: <NumberGuessPage /> },
   { path: "/games/tic-tac-toe", element: <TicTacToePage /> },
   { path: "/games/sudoku", element: <SudokuPage /> },
+  { path: "/games/checkers", element: <CheckersPage /> },
   { path: "*", element: <NotFoundPage /> },
 ];
