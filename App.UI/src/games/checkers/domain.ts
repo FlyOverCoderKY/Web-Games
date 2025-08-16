@@ -149,9 +149,10 @@ export function applyMove(state: GameState, move: Move): GameState {
   let nextPlayer: PlayerColor = state.currentPlayer === "red" ? "black" : "red";
   let forcedFrom: Position | null = null;
   if (move.captured && !crowned) {
-    const more = getValidMoves(nextBoard, { row: move.to.row, col: move.to.col }).filter(
-      (m) => !!m.captured,
-    );
+    const more = getValidMoves(nextBoard, {
+      row: move.to.row,
+      col: move.to.col,
+    }).filter((m) => !!m.captured);
     if (more.length > 0) {
       // same player continues capturing from the new position
       nextPlayer = state.currentPlayer;
@@ -280,9 +281,12 @@ function evaluateBoard(board: Board, perspective: PlayerColor): number {
   const weightMan = 1;
   const weightKing = 1.7;
   const weightAdvance = 0.05;
-  const redScore = redMen * weightMan + redKings * weightKing + redAdvance * weightAdvance;
+  const redScore =
+    redMen * weightMan + redKings * weightKing + redAdvance * weightAdvance;
   const blackScore =
-    blackMen * weightMan + blackKings * weightKing + blackAdvance * weightAdvance;
+    blackMen * weightMan +
+    blackKings * weightKing +
+    blackAdvance * weightAdvance;
   const score = redScore - blackScore; // positive favors red
   return perspective === "red" ? score : -score;
 }
@@ -313,7 +317,15 @@ function minimax(
     for (const m of moves) {
       const nextBoard = applyMoveOnBoard(board, m);
       const nextPlayer: PlayerColor = player === "red" ? "black" : "red";
-      const score = minimax(nextBoard, nextPlayer, perspective, depth - 1, alpha, beta, false);
+      const score = minimax(
+        nextBoard,
+        nextPlayer,
+        perspective,
+        depth - 1,
+        alpha,
+        beta,
+        false,
+      );
       value = Math.max(value, score);
       alpha = Math.max(alpha, value);
       if (alpha >= beta) break;
@@ -324,7 +336,15 @@ function minimax(
     for (const m of moves) {
       const nextBoard = applyMoveOnBoard(board, m);
       const nextPlayer: PlayerColor = player === "red" ? "black" : "red";
-      const score = minimax(nextBoard, nextPlayer, perspective, depth - 1, alpha, beta, true);
+      const score = minimax(
+        nextBoard,
+        nextPlayer,
+        perspective,
+        depth - 1,
+        alpha,
+        beta,
+        true,
+      );
       value = Math.min(value, score);
       beta = Math.min(beta, value);
       if (alpha >= beta) break;
@@ -366,7 +386,15 @@ export function chooseBotMoveWithDifficulty(
   for (const m of moves) {
     const next = applyMoveOnBoard(board, m);
     const nextPlayer: PlayerColor = player === "red" ? "black" : "red";
-    const val = minimax(next, nextPlayer, player, 4, -Infinity, Infinity, false);
+    const val = minimax(
+      next,
+      nextPlayer,
+      player,
+      4,
+      -Infinity,
+      Infinity,
+      false,
+    );
     if (val > bestVal) {
       bestVal = val;
       chosen = m;

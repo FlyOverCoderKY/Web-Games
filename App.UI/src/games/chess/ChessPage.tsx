@@ -19,7 +19,7 @@ import {
   type ChessDifficulty,
   type SerializableMove,
 } from "./domain";
-import type { Move } from "chess.js";
+import type { Move, Square, Piece } from "chess.js";
 
 const BOARD_SIZE = 8;
 const squareSize = 56;
@@ -34,7 +34,11 @@ function ranksForOrientation(orientation: Color): number[] {
   return orientation === "w" ? ranks : [...ranks].reverse();
 }
 
-function indexToSquare(rowIndex: number, colIndex: number, orientation: Color): string {
+function indexToSquare(
+  rowIndex: number,
+  colIndex: number,
+  orientation: Color,
+): string {
   const files = filesForOrientation(orientation);
   const ranks = ranksForOrientation(orientation);
   const file = files[colIndex];
@@ -46,7 +50,7 @@ function isDarkSquareByIndex(rowIndex: number, colIndex: number): boolean {
   return (rowIndex + colIndex) % 2 === 1;
 }
 
-function pieceUnicode(piece: { type: string; color: Color } | null): string {
+function pieceUnicode(piece: Pick<Piece, "type" | "color"> | null): string {
   if (!piece) return "";
   const map: Record<string, { w: string; b: string }> = {
     p: { w: "♙", b: "♟" },
@@ -62,11 +66,14 @@ function pieceUnicode(piece: { type: string; color: Color } | null): string {
 const ChessPage: React.FC = () => {
   const [humanColor, setHumanColor] = React.useState<Color>("w");
   const [difficulty, setDifficulty] = React.useState<ChessDifficulty>("Medium");
-  const [state, setState] = React.useState<GameState>(() => createInitialState("w"));
+  const [state, setState] = React.useState<GameState>(() =>
+    createInitialState("w"),
+  );
   const [selected, setSelected] = React.useState<string | null>(null);
   const [moves, setMoves] = React.useState<Move[]>([]);
   const status = getStatus(state.fen);
-  const turn: Color = status.kind === "InProgress" ? status.turn : state.humanColor;
+  const turn: Color =
+    status.kind === "InProgress" ? status.turn : state.humanColor;
   const botColor: Color = humanColor === "w" ? "b" : "w";
 
   const reset = React.useCallback(() => {
@@ -88,7 +95,7 @@ const ChessPage: React.FC = () => {
     const choice = chooseBotMoveWithDifficulty(state.fen, botColor, difficulty);
     if (!choice) return;
     const id = setTimeout(() => {
-      setState((prev) => applyMove(prev, choice as SerializableMove));
+      setState((prev) => applyMove(prev, choice));
     }, 300);
     return () => clearTimeout(id);
   }, [status.kind, turn, botColor, difficulty, state.fen]);
@@ -100,7 +107,7 @@ const ChessPage: React.FC = () => {
 
     // If selecting a piece
     if (!selected) {
-      const legalFrom = listLegalMoves(state.fen, square as any);
+      const legalFrom = listLegalMoves(state.fen, square as Square);
       if (legalFrom.length === 0) return;
       setSelected(square);
       setMoves(legalFrom);
@@ -115,11 +122,11 @@ const ChessPage: React.FC = () => {
     }
 
     // If clicking a target
-    const target = moves.find((m) => (m as any).to === square);
+    const target = moves.find((m) => m.to === square);
     if (target) {
       const move: SerializableMove = {
-        from: selected as any,
-        to: square as any,
+        from: selected as Square,
+        to: square as Square,
         promotion: "q",
       };
       setSelected(null);
@@ -129,7 +136,7 @@ const ChessPage: React.FC = () => {
     }
 
     // Else, switch selection if new square has moves
-    const legalFrom = listLegalMoves(state.fen, square as any);
+    const legalFrom = listLegalMoves(state.fen, square as Square);
     if (legalFrom.length > 0) {
       setSelected(square);
       setMoves(legalFrom);
@@ -171,11 +178,19 @@ const ChessPage: React.FC = () => {
 
   return (
     <section className="gradient-bg" style={{ padding: "2rem 1rem" }}>
-      <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gap: 16 }}>
+      <div
+        style={{ maxWidth: 900, margin: "0 auto", display: "grid", gap: 16 }}
+      >
         <h2>Chess</h2>
 
         <Card title="Controls">
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 8 }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(5, 1fr)",
+              gap: 8,
+            }}
+          >
             <Select
               label="Human Color"
               value={humanColor}
@@ -199,19 +214,33 @@ const ChessPage: React.FC = () => {
             />
             <div className="ui-field">
               <div className="ui-label">Start/Reset</div>
-              <Button onClick={reset} aria-label="Start or reset game" fullWidth>
+              <Button
+                onClick={reset}
+                aria-label="Start or reset game"
+                fullWidth
+              >
                 Start/Reset
               </Button>
             </div>
             <div className="ui-field">
               <div className="ui-label">Undo</div>
-              <Button variant="secondary" onClick={undo} disabled={!canUndo(state)} fullWidth>
+              <Button
+                variant="secondary"
+                onClick={undo}
+                disabled={!canUndo(state)}
+                fullWidth
+              >
                 Undo
               </Button>
             </div>
             <div className="ui-field">
               <div className="ui-label">Redo</div>
-              <Button variant="secondary" onClick={redo} disabled={!canRedo(state)} fullWidth>
+              <Button
+                variant="secondary"
+                onClick={redo}
+                disabled={!canRedo(state)}
+                fullWidth
+              >
                 Redo
               </Button>
             </div>
@@ -219,13 +248,17 @@ const ChessPage: React.FC = () => {
         </Card>
 
         <Card title="Board" subtitle={statusText}>
-          <Grid columns={BOARD_SIZE} gap={4} style={{ maxWidth: squareSize * BOARD_SIZE, margin: "0 auto" }}>
+          <Grid
+            columns={BOARD_SIZE}
+            gap={4}
+            style={{ maxWidth: squareSize * BOARD_SIZE, margin: "0 auto" }}
+          >
             {renderRows.map((r) =>
               renderCols.map((c) => {
                 const dark = isDarkSquareByIndex(r, c);
                 const square = indexToSquare(r, c, humanColor);
-                const legal = moves.some((m) => (m as any).to === square);
-                const piece = board[r][c] as any;
+                const legal = moves.some((m) => m.to === square);
+                const piece = board[r][c] as Piece | null;
                 return (
                   <button
                     key={`${r}-${c}`}
@@ -246,7 +279,9 @@ const ChessPage: React.FC = () => {
                       display: "grid",
                       placeItems: "center",
                       background: dark ? "#b58863" : "#f0d9b5",
-                      borderColor: legal ? "var(--color-accent)" : "var(--color-border)",
+                      borderColor: legal
+                        ? "var(--color-accent)"
+                        : "var(--color-border)",
                       position: "relative",
                       fontSize: 28,
                     }}
@@ -265,7 +300,7 @@ const ChessPage: React.FC = () => {
                     <span aria-hidden>{pieceUnicode(piece)}</span>
                   </button>
                 );
-              })
+              }),
             )}
           </Grid>
         </Card>
@@ -275,5 +310,3 @@ const ChessPage: React.FC = () => {
 };
 
 export default ChessPage;
-
-

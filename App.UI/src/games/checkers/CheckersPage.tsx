@@ -29,7 +29,8 @@ const CheckersPage: React.FC = () => {
   const [selected, setSelected] = React.useState<Position | null>(null);
   const [moves, setMoves] = React.useState<Move[]>([]);
   const [error, setError] = React.useState<string | null>(null);
-  const [difficulty, setDifficulty] = React.useState<CheckersDifficulty>("Medium");
+  const [difficulty, setDifficulty] =
+    React.useState<CheckersDifficulty>("Medium");
   const [humanColor, setHumanColor] = React.useState<"red" | "black">("red");
 
   function reset() {
@@ -167,13 +168,21 @@ const CheckersPage: React.FC = () => {
         <h2>Checkers</h2>
 
         <Card title="Controls">
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: 8,
+            }}
+          >
             <div className="ui-field">
               <div className="ui-label">Human Color</div>
               <select
                 className="ui-input"
                 value={humanColor}
-                onChange={(e) => setHumanColor(e.target.value as "red" | "black")}
+                onChange={(e) =>
+                  setHumanColor(e.target.value as "red" | "black")
+                }
               >
                 <option value="red">Red</option>
                 <option value="black">Black</option>
@@ -184,7 +193,9 @@ const CheckersPage: React.FC = () => {
               <select
                 className="ui-input"
                 value={difficulty}
-                onChange={(e) => setDifficulty(e.target.value as CheckersDifficulty)}
+                onChange={(e) =>
+                  setDifficulty(e.target.value as CheckersDifficulty)
+                }
               >
                 <option value="Easy">Easy</option>
                 <option value="Medium">Medium</option>
@@ -193,7 +204,9 @@ const CheckersPage: React.FC = () => {
             </div>
             <div className="ui-field">
               <div className="ui-label">Start/Reset</div>
-              <Button onClick={reset} fullWidth>Start/Reset</Button>
+              <Button onClick={reset} fullWidth>
+                Start/Reset
+              </Button>
             </div>
           </div>
         </Card>
