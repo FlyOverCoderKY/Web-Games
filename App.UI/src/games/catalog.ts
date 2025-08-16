@@ -63,4 +63,14 @@ export const gamesCatalog: GameCatalogItem[] = [
     status: "In progress",
     icon: "/checkers.svg",
   },
+  {
+    id: "go",
+    title: "Go",
+    description:
+      "Strategic territory game on a 9×9 board. Place stones, capture groups, and control territory. Two passes end the game.",
+    difficulty: "Advanced",
+    route: "/games/go",
+    status: "In progress",
+    icon: "/go.svg",
+  },
 ];

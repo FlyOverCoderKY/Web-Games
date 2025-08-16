@@ -6,6 +6,7 @@ import SudokuPage from "./games/sudoku/SudokuPage";
 import CheckersPage from "./games/checkers/CheckersPage";
 import ChessPage from "./games/chess/ChessPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import GoPage from "./games/go/GoPage";
 
 export const routes: RouteObject[] = [
   { path: "/", element: <HomePage /> },
@@ -14,5 +15,6 @@ export const routes: RouteObject[] = [
   { path: "/games/chess", element: <ChessPage /> },
   { path: "/games/sudoku", element: <SudokuPage /> },
   { path: "/games/checkers", element: <CheckersPage /> },
+  { path: "/games/go", element: <GoPage /> },
   { path: "*", element: <NotFoundPage /> },
 ];
