@@ -40,6 +40,16 @@ const MainNav: React.FC = () => {
           </li>
           <li>
             <NavLink
+              to="/games/chess"
+              className={({ isActive }) =>
+                isActive ? "nav-link nav-link-active" : "nav-link"
+              }
+            >
+              Chess
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
               to="/games/sudoku"
               className={({ isActive }) =>
                 isActive ? "nav-link nav-link-active" : "nav-link"

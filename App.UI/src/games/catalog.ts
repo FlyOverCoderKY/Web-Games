@@ -34,6 +34,16 @@ export const gamesCatalog: GameCatalogItem[] = [
     icon: "/tic-tac-toe.svg",
   },
   {
+    id: "chess",
+    title: "Chess",
+    description:
+      "Classic chess vs. an AI with Easy/Medium/Hard difficulties. Play as White or Black, undo/redo moves.",
+    difficulty: "Advanced",
+    route: "/games/chess",
+    status: "In progress",
+    icon: "/chess.svg",
+  },
+  {
     id: "sudoku",
     title: "Sudoku",
     description:
